@@ -1,0 +1,11 @@
+/.bundle
+.DS_Store
+.env
+/log/
+/tmp/
+/public/
+.byebug_history
+/config/master.key
+/vendor
+/lib
+/test
