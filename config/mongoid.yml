@@ -1,0 +1,18 @@
+development:
+  clients:
+    default:
+      database: remastered_b2c_api_development
+      hosts:
+        - localhost:27017
+      options:
+  options:
+test:
+  clients:
+    default:
+      database: remastered_b2c_api_test
+      hosts:
+        - localhost:27017
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1
