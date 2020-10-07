@@ -2,7 +2,7 @@ class Preorder
   include Mongoid::Document
 
   validates :details, presence: true
-  validates :amount, presence: true
+  validates :amount, presence: true, numericality: { greater_than: 99 }
   validates :tip, presence: true
   validates :station_id, presence: true
 

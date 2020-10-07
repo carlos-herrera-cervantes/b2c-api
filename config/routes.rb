@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :clients
-  resources :cards
-  resources :preorders
+  resources :clients do
+    resources :cards
+    resources :preorders
+  end
 end
