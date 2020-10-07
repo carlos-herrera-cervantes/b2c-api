@@ -11,16 +11,16 @@ class ClientsController < ApplicationController
 
   def index
     clients = client_repository.get_all
-    render json: { status: true, data: clients }
+    render json: { status: true, data: clients }, except: [:password]
   end
 
   def show
-    render json: { status: true, data: @client }
+    render json: { status: true, data: @client }, except: [:password]
   end
 
   def create
     client = client_manager.create(set_client_params)
-    render json: { status: true, data: client }, status: :created
+    render json: { status: true, data: client }, status: :created, except: [:password]
   end
 
   def update

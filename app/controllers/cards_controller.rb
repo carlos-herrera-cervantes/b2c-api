@@ -11,16 +11,17 @@ class CardsController < ApplicationController
 
   def index
     cards = card_repository.get_all
-    render json: { status: true, data: cards }
+    render json: { status: true, data: cards }, except: [:token]
   end
 
   def show
-    render json: { status: true, data: @card }
+    render json: { status: true, data: @card }, except: [:token]
   end
 
   def create
-    card = card_manager.create(set_card_params)
-    render json: { status: true, data: card }, status: :created
+    merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
+    card = card_manager.create(merge)
+    render json: { status: true, data: card }, status: :created, except: [:token]
   end
 
   def update
@@ -41,7 +42,7 @@ class CardsController < ApplicationController
   end
 
   def set_card_params
-    params.require(:card).permit(:alias, :numbers, :owner, :client_id)
+    params.require(:card).permit(:alias, :numbers, :owner)
   end
 
 end

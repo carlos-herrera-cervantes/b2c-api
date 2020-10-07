@@ -19,7 +19,8 @@ class PreordersController < ApplicationController
   end
 
   def create
-    preorder = preorder_manager.create(set_preorder_params)
+    merge = {}.merge(set_preorder_params, { 'client_id' => params[:client_id] })
+    preorder = preorder_manager.create(merge)
     render json: { status: true, data: preorder }, status: :created
   end
 
@@ -41,7 +42,7 @@ class PreordersController < ApplicationController
   end
 
   def set_preorder_params
-    params.require(:preorder).permit(:details, :amount, :tip, :station_id, :card_id, :client_id)
+    params.require(:preorder).permit(:details, :amount, :tip, :station_id, :card_id)
   end
 
 end
