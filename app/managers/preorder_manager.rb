@@ -2,12 +2,22 @@ class PreorderManager
 
   def create(preorder)
     created = Preorder.new(preorder)
-    created if created.save
+    
+    if created.save
+      created
+    else
+      created.errors
+    end
   end
 
   def update(id, preorder)
     finded = Preorder.find(id)
-    finded if finded.update(preorder)
+    
+    if finded.update(preorder)
+      finded
+    else
+      finded.errors
+    end
   end
 
   def delete(id)
