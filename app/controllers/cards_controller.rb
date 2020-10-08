@@ -1,3 +1,5 @@
+require_relative '../modules/card_module.rb'
+
 class CardsController < ApplicationController
   before_action :set_card, only: [:show, :update, :destroy]
 
@@ -38,7 +40,8 @@ class CardsController < ApplicationController
   def set_card
     @card = card_repository.get_by_id(params[:id])
   rescue => exception
-    render json: { status: false, message: exception, code: 'TEST' }, status: :internal_server_error
+    error = CardModule.get_parse_error(exception)
+    render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
   end
 
   def set_card_params

@@ -1,3 +1,5 @@
+require_relative '../modules/client_module.rb'
+
 class ClientsController < ApplicationController
   before_action :set_client, only: [:show, :update, :destroy]
 
@@ -37,7 +39,8 @@ class ClientsController < ApplicationController
   def set_client
     @client = client_repository.get_by_id(params[:id])
   rescue => exception
-    render json: { status: false, message: exception, code: 'TEST' }, status: :internal_server_error
+    error = ClientModule.get_parse_error(exception)
+    render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
   end
 
   def set_client_params

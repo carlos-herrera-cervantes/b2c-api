@@ -2,12 +2,22 @@ class CardManager
 
   def create(client)
     created = Card.new(client)
-    created if created.save
+    
+    if created.save
+      created
+    else
+      created.errors
+    end
   end
 
   def update(id, card)
     finded = Card.find(id)
-    finded if finded.update(card)
+    
+    if finded.update(card)
+      finded
+    else
+      finded.errors
+    end
   end
 
   def delete(id)

@@ -1,3 +1,5 @@
+require_relative '../modules/preorder_module.rb'
+
 class PreordersController < ApplicationController
   before_action :set_preorder, only: [:show, :update, :destroy]
 
@@ -38,7 +40,8 @@ class PreordersController < ApplicationController
   def set_preorder
     @preorder = preorder_repository.get_by_id(params[:id])
   rescue => exception
-    render json: { status: false, message: exception, code: 'TEST' }, status: :internal_server_error
+    error = PreorderModule.get_parse_error(exception)
+    render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
   end
 
   def set_preorder_params

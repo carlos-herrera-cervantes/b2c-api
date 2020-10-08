@@ -2,12 +2,22 @@ class ClientManager
 
   def create(client)
     created = Client.new(client)
-    created if created.save
+    
+    if created.save
+      created
+    else
+      created.errors
+    end
   end
 
   def update(id, client)
     finded = Client.find(id)
-    finded if finded.update(client)
+    
+    if finded.update(client)
+      finded
+    else
+      finded.errors
+    end
   end
 
   def delete(id)
