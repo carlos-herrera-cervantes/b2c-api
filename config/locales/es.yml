@@ -1,0 +1,43 @@
+es:
+  CardNotFound: "Tarjeta no encontrada."
+  ClientNotFound: "Cliente no encontrado."
+  PreorderNotFound: "Pre orden no encontrada"
+  mongoid:
+    errors:
+      models:
+        preorder:
+          attributes:
+            details:
+              blank: "Los detalles son obligatorios."
+            amount:
+              greater_than: "La cantidad mínima para comprar es 100."
+              blank: "La cantidad a comprar es requerida."
+            station_id:
+              blank: "El ID de la estación es requerido."
+        client:
+          attributes:
+            email:
+              blank: "El correo electrónico es requerido."
+              invalid: "La dirección de correo electrónico no es válida."
+            first_name:
+              blank: "El nombre es requerido."
+            last_name:
+              blank: "El Apellido es requerido."
+            password:
+              blank: "La contraseña es requerida."
+              too_short: "La contraseña es demasiado corta. Mínimo 6 caracteres."
+        card:
+          attributes:
+            alias:
+              blank: "El alias es requerido."
+            owner:
+              blank: "El propietario es requerido."
+            numbers:
+              blank: "Los números son requeridos."
+              invalid: "Los números de la tarjeta son inválidos."
+            cvv:
+              blank: "El CVV es requerido."
+              invalid: "El CVV es inválido."
+            expiration:
+              blank: "La fecha de expiración es requerida."
+              invalid: "La fecha de expiración es inválida."

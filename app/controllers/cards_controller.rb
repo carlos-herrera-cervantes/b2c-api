@@ -45,7 +45,7 @@ class CardsController < ApplicationController
   end
 
   def set_card_params
-    params.require(:card).permit(:alias, :numbers, :owner)
+    params.require(:card).permit(:alias, :numbers, :owner, :cvv, :expiration)
   end
 
 end

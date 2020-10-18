@@ -30,7 +30,10 @@ class Card
 
   def anonymize_numbers
     numbers = self.numbers
+
     self.numbers = numbers[-4..-1]
+    self.cvv = '***'
+    self.expiration = '******'
   end
 
 end

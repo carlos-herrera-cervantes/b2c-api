@@ -3,12 +3,11 @@ class Preorder
 
   validates :details, presence: true
   validates :amount, presence: true, numericality: { greater_than: 99 }
-  validates :tip, presence: true
   validates :station_id, presence: true
 
   field :details, type: String
   field :amount, type: Float
-  field :tip, type: Float
+  field :tip, type: Float, default: 0
   field :total_amount, type: Float, default: 0
   field :station_id, type: BSON::ObjectId
   field :status, type: String, default: 'pending'
