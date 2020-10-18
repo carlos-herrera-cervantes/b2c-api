@@ -4,7 +4,7 @@ module CardModule
   def get_parse_error(exception)
     case
     when exception.class == Mongoid::Errors::DocumentNotFound
-      { 'code' => 'CardNotFound', 'message' => 'Tarjeta no encontrada', 'status_code' => :not_found }
+      { 'code' => 'CardNotFound', 'message' => I18n.t(:CardNotFound), 'status_code' => :not_found }
     end
   end
 

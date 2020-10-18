@@ -45,7 +45,7 @@ class PreordersController < ApplicationController
   end
 
   def set_preorder_params
-    params.require(:preorder).permit(:details, :amount, :tip, :station_id, :card_id)
+    params.require(:preorder).permit(:details, :amount, :station_id, :card_id)
   end
 
 end
