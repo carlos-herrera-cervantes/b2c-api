@@ -2,6 +2,8 @@ en:
   CardNotFound: "Card not found."
   ClientNotFound: "Client not found."
   PreorderNotFound: "Pre order not found."
+  InvalidCredentials: "Invalid user or password."
+  InvalidToken: "Invalid token."
   mongoid:
     errors:
       models:

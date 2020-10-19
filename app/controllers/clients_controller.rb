@@ -1,6 +1,7 @@
 require_relative '../modules/client_module.rb'
 
 class ClientsController < ApplicationController
+  before_action :authorize_request, except: :create
   before_action :set_client, only: [:show, :update, :destroy]
 
   attr_reader :client_repository
