@@ -12,6 +12,8 @@ gem 'puma', '~> 4.1'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 gem 'bcrypt', '~> 3.1.7'
+gem 'jwt'
+gem 'dotenv-rails'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false

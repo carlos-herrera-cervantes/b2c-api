@@ -8,4 +8,8 @@ class ClientRepository
     Client.find(id)
   end
   
+  def get_one(filter)
+    Client.find_by(filter)
+  end
+
 end

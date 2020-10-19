@@ -1,6 +1,7 @@
 require_relative '../modules/preorder_module.rb'
 
 class PreordersController < ApplicationController
+  before_action :authorize_request
   before_action :set_preorder, only: [:show, :update, :destroy]
 
   attr_reader :preorder_repository

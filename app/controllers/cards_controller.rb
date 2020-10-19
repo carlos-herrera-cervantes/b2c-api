@@ -1,6 +1,7 @@
 require_relative '../modules/card_module.rb'
 
 class CardsController < ApplicationController
+  before_action :authorize_request
   before_action :set_card, only: [:show, :update, :destroy]
 
   attr_reader :card_repository
