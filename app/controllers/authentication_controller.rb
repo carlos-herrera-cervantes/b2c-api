@@ -12,9 +12,8 @@ class AuthenticationController < ApplicationController
 
   def login
     client = client_repository.get_one('email' => params[:email])
-    compared_password = BCrypt::Password.new(client.password)
 
-    unless compared_password == params[:password]
+    unless BCrypt::Password.new(client.password).is_password?(params[:password])
       return render json: { status: false, code: 'InvalidCredentials', message: I18n.t(:InvalidCredentials) }
     end
     

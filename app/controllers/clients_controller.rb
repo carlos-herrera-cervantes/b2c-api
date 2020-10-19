@@ -13,7 +13,7 @@ class ClientsController < ApplicationController
   end
 
   def index
-    clients = client_repository.get_all
+    clients = client_repository.get_all(request.query_parameters)
     render json: { status: true, data: clients }, except: [:password]
   end
 
