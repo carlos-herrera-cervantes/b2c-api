@@ -13,7 +13,7 @@ class CardsController < ApplicationController
   end
 
   def index
-    cards = card_repository.get_all
+    cards = card_repository.get_all(request.query_parameters)
     render json: { status: true, data: cards }, except: [:token]
   end
 
@@ -23,6 +23,7 @@ class CardsController < ApplicationController
 
   def create
     merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
+    p "MERGE: #{merge}"
     card = card_manager.create(merge)
     render json: { status: true, data: card }, status: :created, except: [:token]
   end

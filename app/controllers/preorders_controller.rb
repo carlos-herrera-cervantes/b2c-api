@@ -13,7 +13,7 @@ class PreordersController < ApplicationController
   end
   
   def index
-    preorders = preorder_repository.get_all
+    preorders = preorder_repository.get_all(request.query_parameters)
     render json: { status: true, data: preorders }
   end
 
