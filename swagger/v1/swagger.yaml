@@ -1,0 +1,582 @@
+openapi: 3.0.1
+info:
+  title: Remastered B2C API V1
+  version: v1
+paths:
+    /clients:
+      get:
+        tags:
+        - Client
+        summary: Returns list of clients
+        operationId: getClients
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: boolean
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Client'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      post:
+        tags:
+        - Client
+        summary: Create new client
+        operationId: createUser
+        requestBody:
+          description: Client that needs to be added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkClient'
+          400:
+            $ref: '#/statusCodes/BadRequest'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /clients/{id}:
+      get:
+        tags:
+        - Client
+        summary: Returns specific client
+        operationId: getClientById
+        parameters:
+        - name: Client ID
+          in: path
+          description: The ID of the client to retrieve
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkClient'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      patch:
+        tags:
+        - Client
+        summary: Update a specific client
+        operationId: updateClientById
+        parameters:
+        - name: Client ID
+          in: path
+          description: The ID of user to update
+          required: true
+          schema:
+            type: string
+        requestBody:
+          description: Client that needs to be updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkClient'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      delete:
+        tags:
+        - Client
+        summary: Delete a specific client
+        operationId: deleteClientById
+        parameters:
+        - name: Client ID
+          in: path
+          description: The ID of client to delete
+          required: true
+          schema:
+            type: string
+        responses:
+          204:
+            $ref: '#/statusCodes/NoContent'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /clients/{clientId}/cards:
+      get:
+        tags:
+        - Card
+        summary: Returns list of client cards
+        operationId: getCardByClientId
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: boolean
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Card'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      post:
+        tags:
+        - Card
+        summary: Create new card
+        operationId: createCard
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        requestBody:
+          description: Card that needs to be added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkCard'
+          400:
+            $ref: '#/statusCodes/BadRequest'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /clients/{clientId}/cards/{id}:
+      get:
+        tags:
+        - Card
+        summary: Returns the specified card
+        operationId: getCardById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Card ID
+          in: path
+          description: The ID of the card to retrieve
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkCard'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      patch:
+        tags:
+        - Card
+        summary: Update a specific card
+        operationId: updateCardById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Card ID
+          in: path
+          description: The ID of card to update
+          required: true
+          schema:
+            type: string
+        requestBody:
+          description: Card that needs to be updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkCard'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      delete:
+        tags:
+        - Card
+        summary: Delete a specific card
+        operationId: deleteCardById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Card ID
+          in: path
+          description: The ID of card to delete
+          required: true
+          schema:
+            type: string
+        responses:
+          204:
+            $ref: '#/statusCodes/NoContent'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /clients/{clientId}/preorders:
+      get:
+        tags:
+        - Preorder
+        summary: Returns list of preorders
+        operationId: getPreorders
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: boolean
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Preorder'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      post:
+        tags:
+        - Preorder
+        summary: Create new preorder
+        operationId: createPreorder
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        requestBody:
+          description: Preorder that needs to be added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preorder'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkPreorder'
+          400:
+            $ref: '#/statusCodes/BadRequest'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /clients/{clientId}/preorders/{id}:
+      get:
+        tags:
+        - Preorder
+        summary: Returns specific preorder
+        operationId: getPreorderById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Preorder ID
+          in: path
+          description: The ID of the preorder to retrieve
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkPreorder'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      patch:
+        tags:
+        - Preorder
+        summary: Update a specific preorder
+        operationId: updatePreorderById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Preorder ID
+          in: path
+          description: The ID of preorder to update
+          required: true
+          schema:
+            type: string
+        requestBody:
+          description: Preorder that needs to be updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preorder'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkPreorder'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      delete:
+        tags:
+        - Preorder
+        summary: Delete a specific preorder
+        operationId: deletePreorderById
+        parameters:
+        - name: Client ID
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: Preorder ID
+          in: path
+          description: The ID of preorder to delete
+          required: true
+          schema:
+            type: string
+        responses:
+          204:
+            $ref: '#/statusCodes/NoContent'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+statusCodes:
+  NoContent:
+    description: No Content
+    content: {}
+  NotFound:
+    description: Not Found
+    content: {}
+  InternalServerError:
+    description: Internal Server Error
+    content: {}
+  BadRequest:
+    description: Bad Request
+    content: {}
+definitions:
+  ProducesResponseTypeOkClient:
+    type: object
+    properties:
+      status:
+        type: boolean
+        description: Status of operation
+      data:
+        type: object
+        description: Client object
+    example:
+      status: true
+      data:
+        id: 5f4c9fbdcea374dd0b1cffe2
+        first_name: Carlos
+        last_name: Herrera
+        email: carlos@remastered.com
+        gender: Hombre
+        created_at: '2020-10-01T00:00:00'
+        updated_at: '2020-10-01T00:00:00'
+  ProducesResponseTypeOkCard:
+    type: object
+    properties:
+      status:
+        type: boolean
+        description: Status of operation
+      data:
+        type: object
+        description: Card object
+    example:
+      status: true
+      data:
+        id: 5f4c9fbdcea374dd0b1cffe2
+        alias: 'Visa'
+        owner: Ruth Villa
+        numbers: 234567217869
+        cvv: '838'
+        expiration: '02/2024'
+        default: false
+        created_at: '2020-10-01T00:00:00'
+        updated_at: '2020-10-01T00:00:00'
+  ProducesResponseTypeOkPreorder:
+    type: object
+    properties:
+      status:
+        type: boolean
+        description: Status of operation
+      data:
+        type: object
+        description: Preorder object
+    example:
+      status: true
+      data:
+        id: 5f4c9fbdcea374dd0b1cffe2
+        details: Premium Gas
+        amount: 100
+        tip: 10
+        total_amount: 110
+        status: paid
+        station_id: 5f99157bb8c943a07782682c
+        card_id: 5f99158d59c97143d09e6547
+        created_at: '2020-10-01T00:00:00'
+        updated_at: '2020-10-01T00:00:00'
+components:
+  schemas:
+    Client:
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+      type: object
+      properties:
+        id:
+          type: string
+          description: Client ID
+        first_name:
+          type: string
+          description: Client's name
+        last_name:
+          type: string
+          description: Client's last name
+        email:
+          type: string
+          description: Client's email
+        password:
+          type: string
+          description: Client's password
+        gender:
+          type: string
+          description: Client's gender
+    Card:
+      required:
+        - alias
+        - owner
+        - numbers
+        - cvv
+        - expiration
+      type: object
+      properties:
+        id:
+          type: string
+          description: Card ID
+        alias:
+          type: string
+          description: Card alias
+        owner:
+          type: string
+          description: Card owner
+        numbers:
+          type: string
+          description: Card numbers
+        cvv:
+          type: string
+          description: Card CVV
+        expiration:
+          type: string
+          description: Card expiration
+        default:
+          type: boolean
+          description: Default card
+    Preorder:
+      required:
+        - details
+        - amount
+        - station_id
+        - card_id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Preorder ID
+        details:
+          type: string
+          description: Preorder details
+        amount:
+          type: integer
+          description: Preorder amount
+        tip:
+          type: integer
+          description: Preorder tip
+        status:
+          type: string
+          description: Preorder status
+        station_id:
+          type: string
+          description: ID of station that preorder belongs to
+        card_id:
+          type: string
+          description: ID of card used to pay the preorder
+servers:
+- url: http://localhost:3000
