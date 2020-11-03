@@ -1,5 +1,6 @@
 class Preorder
   include Mongoid::Document
+  include Mongoid::Pagination
 
   validates :details, presence: true
   validates :amount, presence: true, numericality: { greater_than: 99 }

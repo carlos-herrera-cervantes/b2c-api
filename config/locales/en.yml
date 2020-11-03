@@ -4,6 +4,8 @@ en:
   PreorderNotFound: "Pre order not found."
   InvalidCredentials: "Invalid user or password."
   InvalidToken: "Invalid token."
+  InvalidPagination: "The value of page must be greater than 0 / Tha value of page_size must be greater than 0 and less than 100."
+  MissingPaginateParams: "page or page_size parameter is missing."
   mongoid:
     errors:
       models:
