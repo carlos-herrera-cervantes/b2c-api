@@ -2,6 +2,7 @@ require 'bcrypt'
 
 class Client
   include Mongoid::Document
+  include Mongoid::Pagination
   include BCrypt
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
