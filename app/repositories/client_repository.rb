@@ -1,11 +1,12 @@
-require_relative '../modules/mongodb_module.rb'
-
 class ClientRepository
 
   def get_all(query_parameters)
-    relation = query_parameters.key?('with') ? query_parameters['with'] : false
-    page = query_parameters.key?('page') ? query_parameters['page'].to_i : false
-    limit = query_parameters.key?('page_size') ? query_parameters['page_size'].to_i : false
+    hash = CommonModule.define_query_parameters(query_parameters)
+    relation, page, limit, sort = hash.values_at('relation', 'page', 'limit', 'sort')
+    
+    if sort
+      return Client.order_by(CommonModule.define_type_ordering(sort))
+    end
 
     if page and limit
       return Client.paginate(:page => page, :limit  => limit)
