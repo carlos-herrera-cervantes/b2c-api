@@ -1,6 +1,9 @@
-class CardManager
+require 'async/await'
 
-  def create(client)
+class CardManager
+  include Async::Await
+
+  async def create_async(client)
     created = Card.new(client)
     
     if created.save
@@ -10,7 +13,7 @@ class CardManager
     end
   end
 
-  def update(id, card)
+  async def update_async(id, card)
     finded = Card.find(id)
     
     if finded.update(card)
@@ -20,7 +23,7 @@ class CardManager
     end
   end
 
-  def delete(id)
+  async def delete_async(id)
     card = Card.find(id)
     card.destroy
   end

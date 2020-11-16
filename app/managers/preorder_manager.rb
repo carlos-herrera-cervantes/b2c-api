@@ -1,6 +1,9 @@
-class PreorderManager
+require 'async/await'
 
-  def create(preorder)
+class PreorderManager
+  include Async::Await
+
+  async def create_async(preorder)
     created = Preorder.new(preorder)
     
     if created.save
@@ -10,7 +13,7 @@ class PreorderManager
     end
   end
 
-  def update(id, preorder)
+  async def update_async(id, preorder)
     finded = Preorder.find(id)
     
     if finded.update(preorder)
@@ -20,7 +23,7 @@ class PreorderManager
     end
   end
 
-  def delete(id)
+  async def delete_async(id)
     preorder = Preorder.find(id)
     preorder.destroy
   end

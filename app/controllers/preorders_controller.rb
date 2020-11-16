@@ -1,6 +1,9 @@
 require_relative '../modules/preorder_module.rb'
+require 'async/await'
 
 class PreordersController < ApplicationController
+  include Async::Await
+
   before_action :authorize_request
   before_action :validate_pagination, only: [:index]
   before_action :set_preorder, only: [:show, :update, :destroy]
@@ -13,8 +16,8 @@ class PreordersController < ApplicationController
     @preorder_manager = preorder_manager
   end
   
-  def index
-    preorders = preorder_repository.get_all(request.query_parameters)
+  async def index
+    preorders = preorder_repository.get_all_async(request.query_parameters).wait
     render json: { status: true, data: preorders }
   end
 
@@ -22,25 +25,25 @@ class PreordersController < ApplicationController
     render json: { status: true, data: @preorder }
   end
 
-  def create
+  async def create
     merge = {}.merge(set_preorder_params, { 'client_id' => params[:client_id] })
-    preorder = preorder_manager.create(merge)
+    preorder = preorder_manager.create_async(merge).wait
     render json: { status: true, data: preorder }, status: :created
   end
 
-  def update
-    preorder = preorder_manager.update(params[:id], set_preorder_params)
+  async def update
+    preorder = preorder_manager.update_async(params[:id], set_preorder_params).wait
     render json: { status: true, data: preorder }, status: :created
   end
 
-  def destroy
-    preorder_manager.delete(params[:id])
+  async def destroy
+    preorder_manager.delete_async(params[:id]).wait
   end
 
   private
 
-  def set_preorder
-    @preorder = preorder_repository.get_by_id(params[:id])
+  async def set_preorder
+    @preorder = preorder_repository.get_by_id_async(params[:id]).wait
   rescue => exception
     error = PreorderModule.get_parse_error(exception)
     render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
