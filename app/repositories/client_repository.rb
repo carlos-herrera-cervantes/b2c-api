@@ -1,6 +1,9 @@
-class ClientRepository
+require 'async/await'
 
-  def get_all(query_parameters)
+class ClientRepository
+  include Async::Await
+
+  async def get_all_async(query_parameters)
     hash = CommonModule.define_query_parameters(query_parameters)
     relation, page, limit, sort = hash.values_at('relation', 'page', 'limit', 'sort')
     
@@ -20,11 +23,11 @@ class ClientRepository
     Client.collection.aggregate(filter)
   end
 
-  def get_by_id(id)
+  async def get_by_id_async(id)
     Client.find(id)
   end
   
-  def get_one(filter)
+  async def get_one_async(filter)
     Client.find_by(filter)
   end
 

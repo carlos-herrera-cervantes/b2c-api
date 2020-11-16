@@ -1,6 +1,9 @@
-class ClientManager
+require 'async/await'
 
-  def create(client)
+class ClientManager
+  include Async::Await
+
+  async def create_async(client)
     created = Client.new(client)
     
     if created.save
@@ -10,7 +13,7 @@ class ClientManager
     end
   end
 
-  def update(id, client)
+  async def update_async(id, client)
     finded = Client.find(id)
     
     if finded.update(client)
@@ -20,7 +23,7 @@ class ClientManager
     end
   end
 
-  def delete(id)
+  async def delete_async(id)
     client = Client.find(id)
     client.destroy
   end

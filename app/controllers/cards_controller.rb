@@ -1,6 +1,9 @@
 require_relative '../modules/card_module.rb'
+require 'async/await'
 
 class CardsController < ApplicationController
+  include Async::Await
+
   before_action :authorize_request
   before_action :validate_pagination, only: [:index]
   before_action :set_card, only: [:show, :update, :destroy]
@@ -13,8 +16,8 @@ class CardsController < ApplicationController
     @card_manager = card_manager
   end
 
-  def index
-    cards = card_repository.get_all(request.query_parameters)
+  async def index
+    cards = card_repository.get_all_async(request.query_parameters).wait
     render json: { status: true, data: cards }, except: [:token]
   end
 
@@ -22,26 +25,25 @@ class CardsController < ApplicationController
     render json: { status: true, data: @card }, except: [:token]
   end
 
-  def create
+  async def create
     merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
-    p "MERGE: #{merge}"
-    card = card_manager.create(merge)
+    card = card_manager.create_async(merge).wait
     render json: { status: true, data: card }, status: :created, except: [:token]
   end
 
-  def update
-    card = card_manager.update(params[:id], set_card_params)
+  async def update
+    card = card_manager.update_async(params[:id], set_card_params).wait
     render json: { status: true, data: card }, status: :created
   end
 
-  def destroy
-    card_manager.delete(params[:id])
+  async def destroy
+    card_manager.delete_async(params[:id]).wait
   end
 
   private
 
-  def set_card
-    @card = card_repository.get_by_id(params[:id])
+  async def set_card
+    @card = card_repository.get_by_id_async(params[:id]).wait
   rescue => exception
     error = CardModule.get_parse_error(exception)
     render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
