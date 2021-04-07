@@ -5,7 +5,6 @@ class ClientsController < ApplicationController
   include Async::Await
   
   before_action :authorize_request, except: :create
-  before_action :validate_pagination, only: [:index]
   before_action :set_client, only: [:show, :update, :destroy]
 
   attr_reader :client_repository
@@ -17,8 +16,14 @@ class ClientsController < ApplicationController
   end
 
   async def index
-    clients = client_repository.get_all_async(request.query_parameters).wait
-    render json: { status: true, data: clients }, except: [:password]
+    hash = CommonModule.define_query_params(request.query_parameters)
+    page, limit = hash.values_at('page', 'limit')
+
+    total_docs = client_repository.count_async().wait
+    clients = client_repository.get_all_async(hash).wait
+
+    pager = CommonModule.set_paginator(page, limit, total_docs)
+    render json: { status: true, data: clients, pager: pager }, except: [:password]
   end
 
   def show
@@ -32,7 +37,7 @@ class ClientsController < ApplicationController
 
   async def update
     client = client_manager.update_async(params[:id], set_client_params).wait
-    render json: { status: true, data: client }, status: :created
+    render json: { status: true, data: client }, status: :created, except: [:password]
   end
 
   async def destroy

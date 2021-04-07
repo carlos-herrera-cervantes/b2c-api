@@ -1,7 +1,10 @@
 require_relative '../modules/client_module.rb'
 require 'bcrypt'
+require 'async/await'
 
 class AuthenticationController < ApplicationController
+  include Async::Await
+
   before_action :authorize_request, except: :login
 
   attr_reader :client_repository
@@ -11,7 +14,7 @@ class AuthenticationController < ApplicationController
   end
 
   def login
-    client = client_repository.get_one('email' => params[:email])
+    client = client_repository.get_one_async('email' => params[:email]).wait
 
     unless BCrypt::Password.new(client.password).is_password?(params[:password])
       return render json: { status: false, code: 'InvalidCredentials', message: I18n.t(:InvalidCredentials) }

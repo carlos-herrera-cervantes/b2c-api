@@ -5,7 +5,6 @@ class CardsController < ApplicationController
   include Async::Await
 
   before_action :authorize_request
-  before_action :validate_pagination, only: [:index]
   before_action :set_card, only: [:show, :update, :destroy]
 
   attr_reader :card_repository
@@ -17,8 +16,14 @@ class CardsController < ApplicationController
   end
 
   async def index
-    cards = card_repository.get_all_async(request.query_parameters).wait
-    render json: { status: true, data: cards }, except: [:token]
+    hash = CommonModule.define_query_params(request.query_parameters)
+    page, limit = hash.values_at('page', 'limit')
+
+    total_docs = card_repository.count_async().wait
+    cards = card_repository.get_all_async(hash).wait
+
+    pager = CommonModule.set_paginator(page, limit, total_docs)
+    render json: { status: true, data: cards, pager: pager }, except: [:token]
   end
 
   def show

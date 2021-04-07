@@ -5,7 +5,6 @@ class PreordersController < ApplicationController
   include Async::Await
 
   before_action :authorize_request
-  before_action :validate_pagination, only: [:index]
   before_action :set_preorder, only: [:show, :update, :destroy]
 
   attr_reader :preorder_repository
@@ -17,8 +16,14 @@ class PreordersController < ApplicationController
   end
   
   async def index
-    preorders = preorder_repository.get_all_async(request.query_parameters).wait
-    render json: { status: true, data: preorders }
+    hash = CommonModule.define_query_params(request.query_parameters)
+    page, limit = hash.values_at('page', 'limit')
+
+    total_docs = preorder_repository.count_async().wait
+    preorders = preorder_repository.get_all_async(hash).wait
+
+    pager = CommonModule.set_paginator(page, limit, total_docs)
+    render json: { status: true, data: preorders, pager: pager }
   end
 
   def show
