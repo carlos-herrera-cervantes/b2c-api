@@ -1,11 +1,12 @@
 require_relative '../modules/client_module.rb'
+require_relative '../constants/roles.rb'
 require 'async/await'
 
 class ClientsController < ApplicationController
   include Async::Await
   
   before_action :authorize_request, except: :create
-  before_action :set_client, only: [:show, :update, :destroy]
+  before_action :current_user
 
   attr_reader :client_repository
   attr_reader :client_manager
@@ -16,7 +17,7 @@ class ClientsController < ApplicationController
   end
 
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters)
+    hash = CommonModule.define_query_params(request.query_parameters, @client)
     page, limit = hash.values_at('page', 'limit')
 
     total_docs = client_repository.count_async().wait
@@ -27,7 +28,12 @@ class ClientsController < ApplicationController
   end
 
   def show
-    render json: { status: true, data: @client }, except: [:password]
+    if @client['role'] == Roles::CLIENT
+      return render json: { status: true, data: @client }, except: [:password]
+    end
+
+    client = client_repository.get_by_id_async(params[:id]).wait
+    return render json: { status: true, data: client }, except: [:password]
   end
 
   async def create
@@ -36,22 +42,24 @@ class ClientsController < ApplicationController
   end
 
   async def update
+    if @client['role'] == Roles::CLIENT
+      client_manager.update_async(@client['id'], set_client_params).wait
+      return render json: { status: true, data: @client }, except: [:password]
+    end
+    
     client = client_manager.update_async(params[:id], set_client_params).wait
-    render json: { status: true, data: client }, status: :created, except: [:password]
+    render json: { status: true, data: client }, except: [:password]
   end
 
   async def destroy
+    if @client['role'] == Roles::CLIENT
+      client_manager.delete_async(@client['id']).wait
+    end
+
     client_manager.delete_async(params[:id]).wait
   end
 
   private
-
-  async def set_client
-    @client = client_repository.get_by_id_async(params[:id]).wait
-  rescue => exception
-    error = ClientModule.get_parse_error(exception)
-    render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
-  end
 
   def set_client_params
    params.require(:client).permit(:first_name, :last_name, :email, :password, :gender)

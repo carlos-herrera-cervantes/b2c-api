@@ -8,13 +8,13 @@ class Card
 
   validates :alias, presence: true
   validates :owner, presence: true
-  validates :numbers, presence: true, format: { with: VALID_NUMBERS_REGEX }, uniqueness: { case_sensitive: false }
-  validates :cvv, presence: true, format: { with: VALID_CVV_REGEX }, uniqueness: { case_sensitive: false }
-  validates :expiration, presence: true, format: { with: VALID_EXPIRATION_REGEX }, uniqueness: { case_sensitive: false }
+  validates :numbers, presence: true, format: { with: VALID_NUMBERS_REGEX }, uniqueness: { case_sensitive: false }, on: :create
+  validates :cvv, presence: true, format: { with: VALID_CVV_REGEX }, uniqueness: { case_sensitive: false }, on: :create
+  validates :expiration, presence: true, format: { with: VALID_EXPIRATION_REGEX }, uniqueness: { case_sensitive: false }, on: :create
 
   field :alias, type: String
-  field :numbers, type: String
   field :owner, type: String
+  field :numbers, type: String
   field :cvv, type: String
   field :expiration, type: String
   field :token, type: String
