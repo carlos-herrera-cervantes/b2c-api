@@ -9,7 +9,7 @@ class Client
 
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }, on: :create
   validates :password, presence: true, length: { minimum: 6 }
 
   field :first_name, type: String
@@ -17,6 +17,7 @@ class Client
   field :email, type: String
   field :password, type: String
   field :gender, type: String, default: 'Sin especificar'
+  field :role, type: String, default: 'client'
   field :created_at, type: DateTime, default: DateTime.now
   field :updated_at, type: DateTime, default: DateTime.now
 

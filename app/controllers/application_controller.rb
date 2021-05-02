@@ -1,6 +1,9 @@
 require_relative '../modules/client_module.rb'
+require 'async/await'
 
 class ApplicationController < ActionController::API
+  include Async::Await
+
   before_action :set_locale
 
   attr_reader :client_repository
@@ -22,10 +25,10 @@ class ApplicationController < ActionController::API
     render json: { status: false, code: 'InvalidToken', message: I18n.t(:InvalidToken) }, status: :unauthorized
   end
 
-  def current_user
+  async def current_user
     token = get_token
     decoded = JsonWebToken.decode(token)
-    @client = client_repository.get_by_id(decoded[:client_id])
+    @client = client_repository.get_by_id_async(decoded[:client_id]).wait
   rescue JWT::DecodeError => error
     render json: { status: false, code: 'InvalidToken', message: I18n.t(:InvalidToken) }, status: :unauthorized
   rescue => exception

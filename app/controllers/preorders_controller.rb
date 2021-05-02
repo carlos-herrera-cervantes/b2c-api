@@ -8,15 +8,21 @@ class PreordersController < ApplicationController
   before_action :set_preorder, only: [:show, :update, :destroy]
 
   attr_reader :preorder_repository
+  attr_reader :client_repository
   attr_reader :preorder_manager
 
-  def initialize(preorder_repository = PreorderRepository.new, preorder_manager = PreorderManager.new)
+  def initialize(
+    preorder_repository = PreorderRepository.new,
+    preorder_manager = PreorderManager.new,
+    client_repository = ClientRepository.new
+  )
     @preorder_repository = preorder_repository
     @preorder_manager = preorder_manager
+    @client_repository = client_repository
   end
   
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters)
+    hash = CommonModule.define_query_params(request.query_parameters, @client, true)
     page, limit = hash.values_at('page', 'limit')
 
     total_docs = preorder_repository.count_async().wait

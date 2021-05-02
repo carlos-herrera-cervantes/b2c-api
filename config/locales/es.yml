@@ -6,6 +6,8 @@ es:
   InvalidToken: "El token es inválido."
   InvalidPagination: "El valor de page debe ser mayor a 0 / El valor de page_size debe ser mayor a 0 y menor que 100."
   MissingPaginateParams: "Falta el parámetro page o page_size."
+  Unauthorized: "No tienes permisos para realizar esta acción"
+  InternalServerError: "Error desconocido"
   mongoid:
     errors:
       models:
