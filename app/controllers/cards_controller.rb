@@ -24,10 +24,10 @@ class CardsController < ApplicationController
   end
 
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters, @client, true)
-    page, limit = hash.values_at('page', 'limit')
+    hash = CommonModule.define_query_params(request.query_parameters, params[:client_id], true)
+    page, limit, filter = hash.values_at('page', 'limit', 'filter')
 
-    total_docs = card_repository.count_async().wait
+    total_docs = card_repository.count_async(filter).wait
     cards = card_repository.get_all_async(hash).wait
 
     pager = CommonModule.set_paginator(page, limit, total_docs)
@@ -39,12 +39,7 @@ class CardsController < ApplicationController
   end
 
   async def create
-    if @client['role'] == Roles::CLIENT
-      merge = {}.merge(set_card_params, { 'client_id' => @client['id'] })
-    else
-      merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
-    end
-    
+    merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
     card = card_manager.create_async(merge).wait
     render json: { status: true, data: card }, status: :created, except: [:token]
   end
@@ -64,7 +59,7 @@ class CardsController < ApplicationController
     if @client['role'] == Roles::CLIENT
       filter = {
         '_id' => BSON::ObjectId.from_string(params[:id]),
-        'client_id' => BSON::ObjectId.from_string(@client['id'])
+        'client_id' => BSON::ObjectId.from_string(params[:client_id])
       }
 
       @card = card_repository.get_one_async(filter).wait

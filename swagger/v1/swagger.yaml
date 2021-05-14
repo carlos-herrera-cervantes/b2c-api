@@ -355,41 +355,6 @@ paths:
             $ref: '#/statusCodes/NotFound'
           500:
             $ref: '#/statusCodes/InternalServerError'
-      patch:
-        tags:
-        - Preorder
-        summary: Update a specific preorder
-        operationId: updatePreorderById
-        parameters:
-        - name: Client ID
-          in: path
-          description: Client ID
-          required: true
-          schema:
-            type: string
-        - name: Preorder ID
-          in: path
-          description: The ID of preorder to update
-          required: true
-          schema:
-            type: string
-        requestBody:
-          description: Preorder that needs to be updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Preorder'
-        responses:
-          201:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  $ref: '#/definitions/ProducesResponseTypeOkPreorder'
-          404:
-            $ref: '#/statusCodes/NotFound'
-          500:
-            $ref: '#/statusCodes/InternalServerError'
       delete:
         tags:
         - Preorder
