@@ -6,7 +6,8 @@ class ClientsController < ApplicationController
   include Async::Await
   
   before_action :authorize_request, except: :create
-  before_action :current_user
+  before_action :current_user, except: :create
+  before_action :set_client_id, except: :create
 
   attr_reader :client_repository
   attr_reader :client_manager
@@ -17,10 +18,10 @@ class ClientsController < ApplicationController
   end
 
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters, @client)
-    page, limit = hash.values_at('page', 'limit')
+    hash = CommonModule.define_query_params(request.query_parameters, params[:id])
+    page, limit, filter = hash.values_at('page', 'limit', 'filter')
 
-    total_docs = client_repository.count_async().wait
+    total_docs = client_repository.count_async(filter).wait
     clients = client_repository.get_all_async(hash).wait
 
     pager = CommonModule.set_paginator(page, limit, total_docs)
@@ -28,10 +29,6 @@ class ClientsController < ApplicationController
   end
 
   def show
-    if @client['role'] == Roles::CLIENT
-      return render json: { status: true, data: @client }, except: [:password]
-    end
-
     client = client_repository.get_by_id_async(params[:id]).wait
     return render json: { status: true, data: client }, except: [:password]
   end
@@ -42,27 +39,24 @@ class ClientsController < ApplicationController
   end
 
   async def update
-    if @client['role'] == Roles::CLIENT
-      client_manager.update_async(@client['id'], set_client_params).wait
-      return render json: { status: true, data: @client }, except: [:password]
-    end
-    
     client = client_manager.update_async(params[:id], set_client_params).wait
     render json: { status: true, data: client }, except: [:password]
   end
 
   async def destroy
-    if @client['role'] == Roles::CLIENT
-      client_manager.delete_async(@client['id']).wait
-    end
-
     client_manager.delete_async(params[:id]).wait
   end
 
   private
 
+  def set_client_id
+    if @client['role'] == Roles::CLIENT
+      params[:id] = @client['id']
+    end
+  end
+
   def set_client_params
-   params.require(:client).permit(:first_name, :last_name, :email, :password, :gender)
+   params.require(:client).permit(:first_name, :last_name, :email, :password, :gender, :role)
   end
 
 end

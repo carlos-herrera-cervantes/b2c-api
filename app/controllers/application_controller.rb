@@ -1,4 +1,5 @@
 require_relative '../modules/client_module.rb'
+require_relative '../constants/roles.rb'
 require 'async/await'
 
 class ApplicationController < ActionController::API
@@ -29,6 +30,10 @@ class ApplicationController < ActionController::API
     token = get_token
     decoded = JsonWebToken.decode(token)
     @client = client_repository.get_by_id_async(decoded[:client_id]).wait
+
+    if @client['role'] == Roles::CLIENT
+      params[:client_id] = @client['id']
+    end
   rescue JWT::DecodeError => error
     render json: { status: false, code: 'InvalidToken', message: I18n.t(:InvalidToken) }, status: :unauthorized
   rescue => exception

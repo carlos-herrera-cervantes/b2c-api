@@ -5,7 +5,8 @@ class PreordersController < ApplicationController
   include Async::Await
 
   before_action :authorize_request
-  before_action :set_preorder, only: [:show, :update, :destroy]
+  before_action :current_user
+  before_action :set_preorder, only: [:show, :destroy]
 
   attr_reader :preorder_repository
   attr_reader :client_repository
@@ -22,10 +23,10 @@ class PreordersController < ApplicationController
   end
   
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters, @client, true)
-    page, limit = hash.values_at('page', 'limit')
+    hash = CommonModule.define_query_params(request.query_parameters, params[:client_id], true)
+    page, limit, filter = hash.values_at('page', 'limit', 'filter')
 
-    total_docs = preorder_repository.count_async().wait
+    total_docs = preorder_repository.count_async(filter).wait
     preorders = preorder_repository.get_all_async(hash).wait
 
     pager = CommonModule.set_paginator(page, limit, total_docs)
@@ -42,11 +43,6 @@ class PreordersController < ApplicationController
     render json: { status: true, data: preorder }, status: :created
   end
 
-  async def update
-    preorder = preorder_manager.update_async(params[:id], set_preorder_params).wait
-    render json: { status: true, data: preorder }, status: :created
-  end
-
   async def destroy
     preorder_manager.delete_async(params[:id]).wait
   end
@@ -54,7 +50,16 @@ class PreordersController < ApplicationController
   private
 
   async def set_preorder
-    @preorder = preorder_repository.get_by_id_async(params[:id]).wait
+    if @client['role'] == Roles::CLIENT
+      filter = {
+        '_id' => BSON::ObjectId.from_string(params[:id]),
+        'client_id' => BSON::ObjectId.from_string(params[:client_id])
+      }
+
+      @preorder = preorder_repository.get_one_async(filter).wait
+    else
+      @preorder = preorder_repository.get_by_id_async(params[:id]).wait
+    end
   rescue => exception
     error = PreorderModule.get_parse_error(exception)
     render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
