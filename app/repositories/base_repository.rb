@@ -9,7 +9,13 @@ class BaseRepository
   end
 
   async def get_all_async(hash)
-    relation, page, limit, sort, filter = hash.values_at('relation', 'page', 'limit', 'sort', 'filter')
+    relation, page, limit, sort, filter = hash.values_at(
+      'relation',
+      'page',
+      'limit',
+      'sort',
+      'filter'
+    )
     keys_relations = RelationsModule.get_relation_by_model(@model_name)
 
     pipeline = MongodbModule.build_filter(relation, keys_relations)

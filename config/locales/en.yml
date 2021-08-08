@@ -2,6 +2,7 @@ en:
   CardNotFound: "Card not found."
   ClientNotFound: "Client not found."
   PreorderNotFound: "Pre order not found."
+  ApiKeyNotFound: "Api Key not found."
   InvalidCredentials: "Invalid user or password."
   InvalidToken: "Invalid token."
   InvalidPagination: "The value of page must be greater than 0 / Tha value of page_size must be greater than 0 and less than 100."
@@ -47,3 +48,9 @@ en:
             expiration:
               blank: "The expiration date is required."
               invalid: "The expiration date is invalid."
+        api_key:
+          attributes:
+            name:
+              blank: "The name is required."
+            api_key:
+              blank: "The Api Key is required."

@@ -1,11 +1,8 @@
-require_relative '../modules/card_module.rb'
-require_relative '../constants/roles.rb'
 require 'async/await'
 
 class CardsController < ApplicationController
   include Async::Await
  
-  before_action :authorize_request
   before_action :current_user
   before_action :set_card, only: [:show, :update, :destroy]
 
@@ -24,14 +21,21 @@ class CardsController < ApplicationController
   end
 
   async def index
-    hash = CommonModule.define_query_params(request.query_parameters, params[:client_id], true)
+    hash = CommonModule.define_query_params(
+      request.query_parameters,
+      params[:client_id], true
+    )
     page, limit, filter = hash.values_at('page', 'limit', 'filter')
 
     total_docs = card_repository.count_async(filter).wait
     cards = card_repository.get_all_async(hash).wait
 
     pager = CommonModule.set_paginator(page, limit, total_docs)
-    render json: { status: true, data: cards, pager: pager }, except: [:token]
+    render json: {
+      status: true,
+      data: cards,
+      pager: pager
+    }, except: [:token]
   end
 
   def show
@@ -39,13 +43,24 @@ class CardsController < ApplicationController
   end
 
   async def create
-    merge = {}.merge(set_card_params, { 'client_id' => params[:client_id] })
+    merge = {}.merge(set_card_params,
+    {
+      'client_id' => params[:client_id]
+    })
     card = card_manager.create_async(merge).wait
-    render json: { status: true, data: card }, status: :created, except: [:token]
+
+    render json: {
+      status: true,
+      data: card
+    }, status: :created, except: [:token]
   end
 
   async def update
-    card = card_manager.update_async(params[:id], set_card_params).wait
+    card = card_manager.update_async(
+      params[:id],
+      set_card_params
+    ).wait
+
     render json: { status: true, data: card }, status: :created
   end
 
@@ -67,12 +82,23 @@ class CardsController < ApplicationController
       @card = card_repository.get_by_id_async(params[:id]).wait
     end
   rescue => exception
-    error = CardModule.get_parse_error(exception)
-    render json: { status: false, message: error['message'], code: error['code'] }, status: error['status_code']
+    error = CommonModule.parse_error(exception, 'card')
+    render json: {
+      status: false,
+      message: error['message'],
+      code: error['code']
+    }, status: error['status_code']
   end
 
   def set_card_params
-    params.require(:card).permit(:alias, :numbers, :owner, :cvv, :expiration, :default)
+    params.require(:card).permit(
+      :alias,
+      :numbers,
+      :owner,
+      :cvv,
+      :expiration,
+      :default
+    )
   end
 
 end

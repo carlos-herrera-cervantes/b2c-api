@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     resources :cards
     resources :preorders
   end
+
+  resources :api_key
   
   post '/auth/login' => 'authentication#login'
   post '/auth/logout' => 'authentication#logout'

@@ -1,7 +1,7 @@
 development:
   clients:
     default:
-      database: remastered_b2c_api_development
+      database: b2c-api
       hosts:
         - localhost:27017
       options:
@@ -9,7 +9,7 @@ development:
 test:
   clients:
     default:
-      database: remastered_b2c_api_test
+      database: b2c-api-test
       hosts:
         - localhost:27017
       options:

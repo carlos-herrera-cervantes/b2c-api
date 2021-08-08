@@ -1,11 +1,10 @@
-require_relative '../modules/client_module.rb'
 require 'bcrypt'
 require 'async/await'
 
 class AuthenticationController < ApplicationController
   include Async::Await
 
-  before_action :authorize_request, except: :login
+  before_action :current_user, except: :login
 
   attr_reader :client_repository
 
@@ -14,18 +13,28 @@ class AuthenticationController < ApplicationController
   end
 
   def login
-    client = client_repository.get_one_async('email' => params[:email]).wait
+    client = client_repository
+      .get_one_async('email' => params[:email])
+      .wait
 
     unless BCrypt::Password.new(client.password).is_password?(params[:password])
-      return render json: { status: false, code: 'InvalidCredentials', message: I18n.t(:InvalidCredentials) }
+      return render json: {
+        status: false,
+        code: 'InvalidCredentials',
+        message: I18n.t(:InvalidCredentials)
+      }
     end
     
     token = JsonWebToken.encode(client_id: client.id)
     time = Time.now + 24.hours.to_i
     render json: { status: true, data: token }
   rescue => exception
-    error = ClientModule.get_parse_error(exception)
-    render json: { status: false, code: error['code'], message: error['message'] }, status: error['status_code']
+    error = CommonModule.parse_error(exception, 'client')
+    render json: {
+      status: false,
+      code: error['code'],
+      message: error['message']
+    }, status: error['status_code']
   end
 
   def logout
