@@ -18,7 +18,13 @@ module CommonModule
       filter['_id'] = BSON::ObjectId.from_string(client_id)
     end
 
-    { 'relation' => relation, 'page' => page, 'limit' => limit, 'sort' => sort, 'filter' => filter }
+    {
+      'relation' => relation,
+      'page' => page,
+      'limit' => limit,
+      'sort' => sort,
+      'filter' => filter
+    }
   end
 
   def set_paginator(page, limit, total_docs)
@@ -31,6 +37,42 @@ module CommonModule
       'remaining_documents' => (total_docs - take) <= 0 ? 0 : total_docs - take,
       'total_documents' => total_docs
     }
+  end
+
+  def parse_error(exception, model = false)
+    is_document_not_found = exception.class == Mongoid::Errors::DocumentNotFound
+    
+    if is_document_not_found && model == 'api_key'
+      {
+        'code' => 'ApiKeyNotFound',
+        'message' => I18n.t(:ApiKeyNotFound),
+        'status_code' => :not_found
+      }
+    elsif is_document_not_found && model == 'client'
+      {
+        'code' => 'ClientNotFound',
+        'message' => I18n.t(:ClientNotFound),
+        'status_code' => :not_found
+      }
+    elsif is_document_not_found && model == 'card'
+      {
+        'code' => 'CardNotFound',
+        'message' => I18n.t(:CardNotFound),
+        'status_code' => :not_found
+      }
+    elsif is_document_not_found && model == 'preorder'
+      {
+        'code' => 'PreorderNotFound',
+        'message' => I18n.t(:PreorderNotFound),
+        'status_code' => :not_found
+      }
+    else
+      {
+        'code' => 'InternalServerError',
+        'message' => I18n.t(:InternalServerError),
+        'status_code' => :internal_server_error
+      }
+    end
   end
 
 end

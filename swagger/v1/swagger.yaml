@@ -380,6 +380,74 @@ paths:
             $ref: '#/statusCodes/NotFound'
           500:
             $ref: '#/statusCodes/InternalServerError'
+    /api_key:
+      get:
+        tags:
+        - Api Key
+        summary: Returns list of api keys
+        operationId: getApiKey
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: boolean
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ApiKey'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+      post:
+        tags:
+        - Api Key
+        summary: Create new Api Key
+        operationId: createApiKey
+        requestBody:
+          description: Api Key that needs to be added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        responses:
+          201:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkApiKey'
+          400:
+            $ref: '#/statusCodes/BadRequest'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
+    /api_key/{id}:
+      get:
+        tags:
+        - Api Key
+        summary: Returns specific Api Key
+        operationId: getApiKeyById
+        parameters:
+        - name: Api Key ID
+          in: path
+          description: The ID of the Api Key to retrieve
+          required: true
+          schema:
+            type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ProducesResponseTypeOkApiKey'
+          404:
+            $ref: '#/statusCodes/NotFound'
+          500:
+            $ref: '#/statusCodes/InternalServerError'
 statusCodes:
   NoContent:
     description: No Content
@@ -454,6 +522,24 @@ definitions:
         status: paid
         station_id: 5f99157bb8c943a07782682c
         card_id: 5f99158d59c97143d09e6547
+        created_at: '2020-10-01T00:00:00'
+        updated_at: '2020-10-01T00:00:00'
+  ProducesResponseTypeOkApiKey:
+    type: object
+    properties:
+      status:
+        type: boolean
+        description: Status of operation
+      data:
+        type: object
+        description: ApiKey object
+    example:
+      status: true
+      data:
+        id: 5f4c9fbdcea374dd0b1cffe2
+        name: Local Component
+        api_key: 'GHTDJ37732L4NF37'
+        role: superadmin
         created_at: '2020-10-01T00:00:00'
         updated_at: '2020-10-01T00:00:00'
 components:
@@ -543,5 +629,19 @@ components:
         card_id:
           type: string
           description: ID of card used to pay the preorder
+    ApiKey:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          description: API Key ID
+        name:
+          type: string
+          description: Name of API Key
+        role:
+          type: string
+          description: Role of API Key
 servers:
 - url: http://localhost:3000
