@@ -1,4 +1,4 @@
-class Preorder
+class Preorder < Base
   include Mongoid::Document
   include Mongoid::Pagination
 
@@ -21,9 +21,11 @@ class Preorder
   field :post_auth_id, type: String
   field :cancel_at, type: DateTime
   field :cancel_auth_id, type: String
-  field :created_at, type: DateTime, default: DateTime.now
-  field :updated_at, type: DateTime, default: DateTime.now
+  field :created_at, type: DateTime
+  field :updated_at, type: DateTime
 
   belongs_to :card
   belongs_to :client
+
+  before_save :set_dates
 end

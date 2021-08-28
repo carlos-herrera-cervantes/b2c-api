@@ -4,11 +4,25 @@ module CommonModule
   extend self
 
   def define_query_params(query_params, client_id = false, is_foreign = false)
-    relation = query_params.key?('with') ? query_params['with'] : false
-    page = query_params['page'].to_i <= 1 ? 0 : query_params['page'].to_i - 1 || 0
-    limit = query_params.key?('page_size') ? query_params['page_size'].to_i : 10
-    sort = query_params.key?('sort') ? query_params['sort'] : { "created_at" => -1 }
-    filter = query_params.key?('filter') ? JSON.parse(query_params['filter']) : {}
+    relation = query_params['with']
+    
+    page = query_params['page'].to_i <= 1 ?
+      0 :
+      query_params['page'].to_i - 1
+    
+    limit = query_params.key?('page_size') ?
+      query_params['page_size'].to_i > 100 ?
+      100 :
+      query_params['page_size'].to_i :
+      10
+    
+    sort = query_params.key?('sort') ?
+      JSON.parse(query_params['sort']) :
+      { "created_at" => -1 }
+    
+    filter = query_params.key?('filter') ?
+      JSON.parse(query_params['filter']) :
+      {}
 
     if client_id && is_foreign
       filter['client_id'] = BSON::ObjectId.from_string(client_id)
@@ -20,7 +34,7 @@ module CommonModule
 
     {
       'relation' => relation,
-      'page' => page,
+      'page' => page * limit,
       'limit' => limit,
       'sort' => sort,
       'filter' => filter

@@ -1,4 +1,4 @@
-class Card
+class Card < Base
   include Mongoid::Document
   include Mongoid::Pagination
 
@@ -19,13 +19,13 @@ class Card
   field :expiration, type: String
   field :token, type: String
   field :default, type: Boolean, default: false
-  field :created_at, type: DateTime, default: DateTime.now
-  field :updated_at, type: DateTime, default: DateTime.now
+  field :created_at, type: DateTime
+  field :updated_at, type: DateTime
 
   has_many :preorders, dependent: :destroy
   belongs_to :client
 
-  before_save :anonymize_numbers
+  before_save :anonymize_numbers, :set_dates
 
   protected
 

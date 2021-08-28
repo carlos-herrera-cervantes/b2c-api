@@ -6,9 +6,9 @@ module MongodbModule
       return []
     end
 
-    entities = relation ? relation.split(',') : false
+    entities = relation&.split(',')
       
-    result = entities.map do |entity|
+    result = entities&.map do |entity|
       selected_key = keys_relations[entity]
       {
         '$lookup' => {
