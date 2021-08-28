@@ -1,6 +1,6 @@
 require 'bcrypt'
 
-class Client
+class Client < Base
   include Mongoid::Document
   include Mongoid::Pagination
   include BCrypt
@@ -18,13 +18,13 @@ class Client
   field :password, type: String
   field :gender, type: String, default: 'Sin especificar'
   field :role, type: String, default: 'client'
-  field :created_at, type: DateTime, default: DateTime.now
-  field :updated_at, type: DateTime, default: DateTime.now
+  field :created_at, type: DateTime
+  field :updated_at, type: DateTime
 
   has_many :cards, dependent: :destroy
   has_many :preorders, dependent: :destroy
 
-  before_save :set_encrypted_password
+  before_save :set_encrypted_password, :set_dates
 
   protected
 
